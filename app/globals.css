@@ -66,6 +66,11 @@
   color: transparent;
 }
 
+/* The 404 page brings its own minimal footer. */
+body:has([data-minimal-footer]) [data-site-footer] {
+  display: none;
+}
+
 html {
   background: var(--color-abyss);
   scroll-behavior: auto;

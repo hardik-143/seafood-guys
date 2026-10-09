@@ -43,7 +43,7 @@ const iconButton =
 
 export function Footer() {
   return (
-    <footer className="relative bg-abyss text-white">
+    <footer className="relative bg-abyss text-white" data-site-footer>
       <Waves className="absolute inset-x-0 -top-[59px] h-[60px] text-abyss" />
       <div className="grain relative overflow-hidden">
         {/* Soft lime glow behind the top row */}

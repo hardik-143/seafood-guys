@@ -26,31 +26,41 @@ export function FaqExplorer() {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <label className="relative block w-full md:max-w-md">
+      <div className="rounded-[2rem] bg-white p-3 shadow-[0_30px_60px_-30px_rgba(10,20,51,0.35)]">
+        <label className="relative block">
           <Search className="absolute top-1/2 left-5 size-5 -translate-y-1/2 text-ink/40" />
           <input
-            className="w-full rounded-full border border-abyss/15 bg-white py-4 pr-5 pl-14 text-abyss shadow-[0_20px_40px_-30px_rgba(10,20,51,0.4)] outline-none transition placeholder:text-ink/40 focus:border-abyss focus:ring-4 focus:ring-lime/40"
+            className="w-full rounded-[1.4rem] bg-foam/60 py-4 pr-5 pl-14 text-abyss outline-none transition placeholder:text-ink/40 focus:bg-foam focus:ring-2 focus:ring-lime"
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search: delivery, thaw, stone crab…"
             value={query}
           />
         </label>
-        <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 md:mx-0 md:flex-wrap md:px-0">
-          {[{ id: "all", label: "All" }, ...faqGroups].map((g) => (
+        <div className="mt-3 flex gap-1 overflow-x-auto" role="tablist">
+          {[{ id: "all", label: "All", items: faqGroups.flatMap((g) => g.items) }, ...faqGroups].map((g) => (
             <button
+              aria-selected={group === g.id}
               className={cn(
-                "relative isolate shrink-0 rounded-full border px-4 py-2 font-semibold text-sm transition",
-                group === g.id ? "border-abyss text-lime" : "border-abyss/15 text-ink/60 hover:border-abyss/40"
+                "relative isolate flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 font-semibold text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-lime",
+                group === g.id ? "text-white" : "text-ink/55 hover:text-abyss"
               )}
               key={g.id}
               onClick={() => setGroup(g.id)}
+              role="tab"
               type="button"
             >
               {group === g.id && (
                 <motion.span className="absolute inset-0 -z-10 rounded-full bg-abyss" layoutId="faq-chip" transition={{ type: "spring", damping: 26, stiffness: 300 }} />
               )}
               {g.label}
+              <span
+                className={cn(
+                  "grid min-w-5 place-items-center rounded-full px-1.5 text-[11px]",
+                  group === g.id ? "bg-lime text-abyss" : "bg-foam text-ink/50"
+                )}
+              >
+                {g.items.length}
+              </span>
             </button>
           ))}
         </div>
