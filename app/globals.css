@@ -28,7 +28,6 @@
   --animate-bob: bob 6s ease-in-out infinite;
   --animate-spin-slow: spin 18s linear infinite;
   --animate-rise: rise 2.4s ease-in infinite;
-  --animate-swim: swim 14s linear infinite;
 
   @keyframes marquee {
     from { transform: translateX(0); }
@@ -37,14 +36,6 @@
   @keyframes bob {
     0%, 100% { transform: translateY(0) rotate(-2deg); }
     50% { transform: translateY(-14px) rotate(2deg); }
-  }
-  /* 404 footer: a mahi crossing the screen, bobbing as it goes. */
-  @keyframes swim {
-    0% { transform: translateX(-10vw) translateY(0); }
-    25% { transform: translateX(22vw) translateY(-6px); }
-    50% { transform: translateX(55vw) translateY(4px); }
-    75% { transform: translateX(85vw) translateY(-5px); }
-    100% { transform: translateX(110vw) translateY(0); }
   }
   /* Boil planner bubbles. */
   @keyframes rise {

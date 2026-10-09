@@ -38,12 +38,6 @@ export default function NotFound() {
       {/* Minimal footer; globals.css hides the full site footer when this is on the page. */}
       <footer className="relative bg-navy" data-minimal-footer>
         <Waves className="absolute inset-x-0 -top-[59px] h-[60px] text-navy" />
-        {/* A mahi swimming across the waterline, on loop */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 -top-10 h-10 overflow-hidden">
-          <div className="absolute top-2 left-0 animate-swim">
-            <MahiMark className="h-7 w-auto -scale-x-100" />
-          </div>
-        </div>
 
         <div className="container relative py-10">
           <div className="flex flex-col items-center justify-between gap-5 md:flex-row">

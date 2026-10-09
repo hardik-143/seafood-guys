@@ -65,9 +65,6 @@ export default function ReviewsPage() {
               Real boxes, real people
             </h2>
           </div>
-          <p className="hidden rounded-full bg-abyss px-4 py-2 font-semibold text-lime text-xs uppercase tracking-[0.2em] lg:block">
-            Drag the photos around
-          </p>
         </div>
         <div className="mt-12">
           <PolaroidWall items={wall} />
