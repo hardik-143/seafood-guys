@@ -29,15 +29,6 @@ export const nav = [
   { label: "Contact", href: "/contact" },
 ] as const;
 
-/** Specials and guides, linked from the footer. */
-export const extraNav = [
-  { label: "Stone & King Crab", href: "/crabs" },
-  { label: "Lobster Tails", href: "/lobster" },
-  { label: "Seafood Boil Planner", href: "/boil" },
-  { label: "Cook It Right", href: "/cook" },
-  { label: "Wholesale", href: "/wholesale" },
-] as const;
-
 export const areas = {
   "Miami-Dade": [
     "Brickell",
