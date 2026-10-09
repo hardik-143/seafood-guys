@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Seafood Guys palette — pulled from the client's flyer and mahi logo:
+ * deep "abyss" navy, electric lime, a mahi-blue mid tone, coral for prices,
+ * and an icy off-white for cooler/ice sections.
+ */
+@theme {
+  --color-abyss: #0a1433;
+  --color-navy: #1a2c5c;
+  --color-tide: #23407f;
+  --color-mahi: #2fa4d9;
+  --color-lime: #c9f23a;
+  --color-lime-deep: #a6d10f;
+  --color-coral: #ff6a4d;
+  --color-ice: #f2f6f3;
+  --color-foam: #e3ece8;
+  --color-ink: #0d1530;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: var(--font-anton), "Impact", sans-serif;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-yellowtail), cursive;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --ease-tide: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-marquee-rev: marquee 38s linear infinite reverse;
+  --animate-bob: bob 6s ease-in-out infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-rise: rise 2.4s ease-in infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-14px) rotate(2deg); }
+  }
+  /* Boil planner bubbles. */
+  @keyframes rise {
+    0% { transform: translateY(0) scale(0.5); opacity: 0; }
+    15% { opacity: 0.9; }
+    100% { transform: translateY(-420px) scale(1.15); opacity: 0; }
   }
 }
 
+/* Footer wordmark water, used via animate-[tide_…]. */
+@keyframes tide {
+  from { background-position-x: 0, 0; }
+  to { background-position-x: 1200px, -900px; }
+}
+
+@utility container {
+  width: 100%;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 64rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility text-outline {
+  -webkit-text-stroke: 0.025em var(--outline, #fff);
+  color: transparent;
+}
+
+html {
+  background: var(--color-abyss);
+  scroll-behavior: auto;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ice);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 0.92;
+}
+
+::selection {
+  background: var(--color-lime);
+  color: var(--color-abyss);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Grain overlay used on dark sections so flat navy doesn't band. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Scroll reveal: attribute opt-in driven by components/reveal.tsx so sections
+ * stay server components.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(36px);
+    transition:
+      opacity 0.9s var(--ease-tide),
+      transform 0.9s var(--ease-tide);
+  }
+  [data-reveal="left"] { transform: translateX(-48px); }
+  [data-reveal="right"] { transform: translateX(48px); }
+  [data-reveal="zoom"] { transform: scale(0.94); }
+  [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+  [data-reveal-group] > * {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.8s var(--ease-tide),
+      transform 0.8s var(--ease-tide);
+  }
+  [data-reveal-group][data-revealed] > * {
+    opacity: 1;
+    transform: none;
+  }
+  [data-reveal-group][data-revealed] > *:nth-child(2) { transition-delay: 80ms; }
+  [data-reveal-group][data-revealed] > *:nth-child(3) { transition-delay: 160ms; }
+  [data-reveal-group][data-revealed] > *:nth-child(4) { transition-delay: 240ms; }
+  [data-reveal-group][data-revealed] > *:nth-child(5) { transition-delay: 320ms; }
+  [data-reveal-group][data-revealed] > *:nth-child(6) { transition-delay: 400ms; }
+  [data-reveal-group][data-revealed] > *:nth-child(n + 7) { transition-delay: 480ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

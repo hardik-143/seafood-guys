@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Seafood Guys — website
 
-## Getting Started
+Marketing + ordering site for Seafood Guys (premium seafood & meats delivered in
+Miami and Fort Lauderdale). Built on the same stack family as the Sarasota
+template — Next.js App Router, Tailwind CSS v4, TypeScript — with its own
+visual identity and a three.js layer.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev          # http://localhost:3000
+pnpm build && pnpm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What's inside
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Page          | Highlights |
+| ------------- | ---------- |
+| `/`           | 3D underwater hero (procedural swimming mahi, caustics, god rays, bubbles), stats counters, tilted product marquee, pinned horizontal "The Catch" scroller, package cards, scroll-driven 3D cooler box that opens and launches the products, reels in phone mockups, customer photo wall, 10%-off promo, delivery areas + FAQ |
+| `/menu`       | Every package, case and single item from the client's menu board, with choice pickers, add-to-order and the downloadable menu board |
+| `/our-story`  | Brand story, values, who we deliver to, delivery reel |
+| `/gallery`    | Filterable masonry of all client photos with lightbox, plus all reels |
+| `/contact`    | Call/text cards for each line, contact form, delivery areas, map, FAQ |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Ordering:** a persistent cart (localStorage) in a slide-out drawer. Checkout
+collects name / phone / address / date and POSTs to `/api/inquiry`; customers
+can also send the order as a pre-filled SMS. Payment is collected on delivery.
 
-## Learn More
+### Email delivery for orders & contact form
 
-To learn more about Next.js, take a look at the following resources:
+`/api/inquiry` sends through [Resend](https://resend.com) when these env vars
+are set; without them it logs the submission to the server console.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+RESEND_API_KEY=...
+INQUIRY_TO_EMAIL=orders@yourdomain.com
+INQUIRY_FROM_EMAIL="Seafood Guys <orders@yourdomain.com>"   # verified domain
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Editing content
 
-## Deploy on Vercel
+Everything business-specific lives in `content/`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `content/site.ts` — phones, email, Instagram, delivery areas, FAQ
+- `content/menu.ts` — packages, cases, singles, prices, "The Catch" list
+- `content/gallery.ts` — photo + video list with alt text
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Media is in `public/media/` (converted from the raw client files in the parent
+folder: HEIC → JPEG, MOV → muted 720p MP4 with poster frames).
+
+## Needs client confirmation before launch
+
+- **Phone numbers** — the materials show three: (786) 643-3670 (flyer),
+  (786) 484-3600 Miami and (954) 728-0303 Ft. Lauderdale (older insert card).
+  Which are current, and which is the main order line?
+- **Email** (`orders@seafoodguysmiami.com`) and **Instagram** handle
+  (`@seafoodguysmiami`) are placeholders.
+- **Prices** are transcribed from the menu board; the "Seafood Guys Choice"
+  package had no price, so it shows "Call for price".
+- **Delivery area list** (neighbourhoods) and FAQ answers (payment on delivery,
+  delivery windows by text) are reasonable defaults, not client-supplied.
+- **Our Story** copy is placeholder narrative — replace with the real story.
+- **Logo** — no standalone logo file was supplied (it only exists flattened on
+  flyers), so `components/ui/logo.tsx` is a vector stand-in. Drop in the real
+  vector logo when available.
+- **Customer photos** — confirm the people pictured are OK appearing on the site.
