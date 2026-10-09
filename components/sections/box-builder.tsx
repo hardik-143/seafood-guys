@@ -41,6 +41,13 @@ const options: Option[] = allItems.flatMap((item): Option[] => {
 
 const PER_COOLER = 12;
 
+/** Where the copies behind a stacked tile sit, as a % of the tile. */
+const fan = [
+  { rotate: -11, x: "-14%", y: "6%" },
+  { rotate: 12, x: "14%", y: "-5%" },
+  { rotate: -4, x: "4%", y: "-14%" },
+];
+
 export function BoxBuilder() {
   const { add } = useCart();
   const [qty, setQty] = useState<Record<string, number>>({});
@@ -126,7 +133,7 @@ export function BoxBuilder() {
           </div>
 
           <div className="mt-6 rounded-[1.6rem] border-[10px] border-[#eef1ee] bg-gradient-to-b from-[#cfe3ee] to-[#e9f2f6] p-4 shadow-[inset_0_6px_18px_rgba(10,20,51,0.25)]">
-            <div className="grid min-h-[200px] grid-cols-3 content-start gap-x-4 gap-y-5 sm:grid-cols-4">
+            <div className="grid min-h-[200px] grid-cols-3 content-start gap-x-7 gap-y-8 p-3 sm:grid-cols-4">
               <AnimatePresence mode="popLayout">
                 {lines.map((o, i) => {
                   const n = qty[o.key];
@@ -140,15 +147,18 @@ export function BoxBuilder() {
                       layout
                       transition={{ type: "spring", damping: 16, stiffness: 260 }}
                     >
-                      {/* One card fanned out behind for each extra copy (max two shown). */}
-                      {Array.from({ length: Math.min(n - 1, 2) }, (_, k) => (
-                        <motion.span
-                          animate={{ rotate: (k + 1) * 6, x: (k + 1) * 5, y: -(k + 1) * 3, opacity: 1 }}
-                          className="absolute inset-0 rounded-xl border-2 border-white bg-[#dfe9ee] shadow-md"
+                      {/* A real copy fanned out behind for each extra one (up to three). */}
+                      {fan.slice(0, Math.min(n - 1, fan.length)).map((f, k) => (
+                        <motion.div
+                          animate={{ rotate: f.rotate, x: f.x, y: f.y, opacity: 1 }}
+                          className="absolute inset-0 overflow-hidden rounded-xl border-2 border-white shadow-[0_8px_18px_-6px_rgba(10,20,51,0.45)]"
                           initial={{ rotate: 0, x: 0, y: 0, opacity: 0 }}
                           key={k}
                           style={{ zIndex: -1 - k }}
-                        />
+                          transition={{ type: "spring", damping: 14, stiffness: 220 }}
+                        >
+                          <Image alt="" className="object-cover brightness-90" fill sizes="110px" src={o.image} />
+                        </motion.div>
                       ))}
                       <div className="relative size-full overflow-hidden rounded-xl border-2 border-white shadow-md">
                         <Image alt={o.name} className="object-cover" fill sizes="110px" src={o.image} />

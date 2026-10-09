@@ -9,23 +9,24 @@ export type Polaroid = { src: string; alt: string; caption: string };
 
 type Spot = { left: number; top: number; rotate: number; z: number };
 
-/** The tidy starting layout: two loose rows of five. */
-const initialSpots = (n: number): Spot[] =>
-  Array.from({ length: n }, (_, i) => ({
-    left: 2 + (i % 5) * 19 + (Math.floor(i / 5) % 2) * 6,
-    top: Math.floor(i / 5) * 34 + ((i * 13) % 7),
-    rotate: ((i * 37) % 15) - 7,
-    z: i,
-  }));
+const COLS = 5;
 
+/** Grid slot i: five columns, two rows, each card fully visible. */
+const slot = (i: number, jitter: number, rotate: number, z: number): Spot => ({
+  left: 1 + (i % COLS) * 19.8 + jitter,
+  top: Math.floor(i / COLS) * 50 + Math.abs(jitter),
+  rotate,
+  z,
+});
+
+/** Starting layout: photos in order, gently tilted. */
+const initialSpots = (n: number): Spot[] =>
+  Array.from({ length: n }, (_, i) => slot(i, (((i * 7) % 3) - 1) * 0.5, ((i * 37) % 9) - 4, i));
+
+/** Shuffle: photos swap grid slots at random, with a fresh small tilt and nudge. */
 const randomSpots = (n: number): Spot[] => {
-  const order = Array.from({ length: n }, (_, i) => i).sort(() => Math.random() - 0.5);
-  return Array.from({ length: n }, (_, i) => ({
-    left: Math.random() * 78,
-    top: Math.random() * 56,
-    rotate: Math.random() * 22 - 11,
-    z: order[i],
-  }));
+  const slots = Array.from({ length: n }, (_, i) => i).sort(() => Math.random() - 0.5);
+  return slots.map((s, i) => slot(s, Math.random() - 0.5, Math.random() * 8 - 4, i));
 };
 
 function Card({
@@ -63,7 +64,7 @@ function Card({
   return (
     <motion.figure
       animate={inView ? { opacity: 1, left: `${spot.left}%`, top: `${spot.top}%`, rotate: spot.rotate } : { opacity: 0 }}
-      className="absolute w-60 cursor-grab rounded-2xl bg-white p-3 pb-5 shadow-[0_30px_50px_-25px_rgba(10,20,51,0.55)] active:cursor-grabbing"
+      className="absolute w-[18%] cursor-grab rounded-2xl bg-white p-3 pb-5 shadow-[0_30px_50px_-25px_rgba(10,20,51,0.55)] active:cursor-grabbing"
       drag
       dragConstraints={table}
       dragElastic={0.15}
