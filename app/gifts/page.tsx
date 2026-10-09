@@ -36,7 +36,7 @@ export default function GiftsPage() {
         <div className="grid gap-5 md:grid-cols-3" data-reveal-group>
           {steps.map(({ icon: Icon, title, body }, i) => (
             <article className="relative overflow-hidden rounded-3xl bg-white p-6 shadow-[0_20px_40px_-30px_rgba(10,20,51,0.4)]" key={title}>
-              <span className="absolute -top-3 -right-1 font-display text-[6rem] text-navy/[0.06] leading-none">0{i + 1}</span>
+              <span className="pointer-events-none absolute top-3 right-5 font-display text-[5rem] text-navy/[0.06] leading-none">0{i + 1}</span>
               <Icon className="size-7 text-mahi" />
               <h3 className="mt-5 text-3xl text-abyss">{title}</h3>
               <p className="mt-2 text-ink/65 text-sm">{body}</p>

@@ -82,7 +82,7 @@ export default function ReviewsPage() {
           <ol className="mt-12 grid gap-5 md:grid-cols-3" data-reveal-group>
             {steps.map(({ icon: Icon, title, body }, i) => (
               <li className="relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-6" key={title}>
-                <span className="absolute -top-4 -right-1 font-display text-[6rem] text-white/[0.05] leading-none">0{i + 1}</span>
+                <span className="pointer-events-none absolute top-3 right-5 font-display text-[5rem] text-white/[0.05] leading-none">0{i + 1}</span>
                 <span className="grid size-12 place-items-center rounded-2xl bg-lime text-abyss">
                   <Icon className="size-6" />
                 </span>

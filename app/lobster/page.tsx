@@ -107,7 +107,7 @@ export default function LobsterPage() {
             <ol className="mt-12 grid gap-5 sm:grid-cols-2" data-reveal-group>
               {steps.map(({ icon: Icon, title, body }, i) => (
                 <li className="group relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-6 transition duration-500 hover:-translate-y-1 hover:border-lime/50" key={title}>
-                  <span className="absolute -top-4 -right-1 font-display text-[6rem] text-white/[0.05] leading-none">0{i + 1}</span>
+                  <span className="pointer-events-none absolute top-3 right-5 font-display text-[5rem] text-white/[0.05] leading-none">0{i + 1}</span>
                   <span className="grid size-12 place-items-center rounded-2xl bg-lime text-abyss transition duration-500 group-hover:rotate-12">
                     <Icon className="size-6" />
                   </span>

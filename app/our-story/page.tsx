@@ -93,7 +93,7 @@ export default function OurStoryPage() {
           <div className="mt-14 grid gap-6 md:grid-cols-3" data-reveal-group>
             {values.map(({ icon: Icon, title, body }, i) => (
               <article className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 transition duration-500 hover:-translate-y-2 hover:border-lime/50" key={title}>
-                <span className="absolute -top-6 -right-2 font-display text-[9rem] text-white/[0.04] leading-none">
+                <span className="pointer-events-none absolute top-3 right-6 font-display text-[7rem] text-white/[0.04] leading-none">
                   0{i + 1}
                 </span>
                 <span className="grid size-14 place-items-center rounded-2xl bg-lime text-abyss transition duration-500 group-hover:rotate-12">
