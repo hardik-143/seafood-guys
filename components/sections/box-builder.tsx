@@ -57,9 +57,11 @@ export function BoxBuilder() {
     });
 
   const lines = options.filter((o) => qty[o.key]);
-  const tiles = lines.flatMap((o) => Array.from({ length: qty[o.key] }, (_, i) => ({ ...o, tileKey: `${o.key}-${i}` })));
+  const units = lines.reduce((n, o) => n + qty[o.key], 0);
   const total = lines.reduce((n, o) => n + o.price * qty[o.key], 0);
-  const coolers = Math.max(1, Math.ceil(tiles.length / PER_COOLER));
+  const coolers = Math.max(1, Math.ceil(units / PER_COOLER));
+  // How full the last cooler is.
+  const fill = units === 0 ? 0 : ((units - 1) % PER_COOLER) + 1;
 
   const sms = `Hi Seafood Guys! I'd like this box:\n${lines.map((o) => `${qty[o.key]} × ${o.name}`).join("\n")}\nEstimated $${total}`;
 
@@ -123,45 +125,66 @@ export function BoxBuilder() {
             <p className="font-display text-4xl">${total}</p>
           </div>
 
-          <div className="mt-6 space-y-4">
-            {Array.from({ length: coolers }, (_, c) => {
-              const slice = tiles.slice(c * PER_COOLER, (c + 1) * PER_COOLER);
-              return (
-                <motion.div
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="rounded-[1.6rem] border-[10px] border-[#eef1ee] bg-gradient-to-b from-[#cfe3ee] to-[#e9f2f6] p-3 shadow-[inset_0_6px_18px_rgba(10,20,51,0.25)]"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  key={c}
-                >
-                  <div className="grid min-h-[200px] grid-cols-4 content-start gap-2">
-                    <AnimatePresence mode="popLayout">
-                      {slice.map((t, i) => (
-                        <motion.div
-                          animate={{ y: 0, opacity: 1, rotate: ((i * 37) % 9) - 4 }}
-                          className="relative aspect-square overflow-hidden rounded-xl border-2 border-white shadow-md"
-                          exit={{ y: -30, opacity: 0, scale: 0.6 }}
-                          initial={{ y: -60, opacity: 0, rotate: 0 }}
-                          key={t.tileKey}
-                          layout
-                          transition={{ type: "spring", damping: 16, stiffness: 260 }}
-                        >
-                          <Image alt={t.name} className="object-cover" fill sizes="90px" src={t.image} />
-                        </motion.div>
+          <div className="mt-6 rounded-[1.6rem] border-[10px] border-[#eef1ee] bg-gradient-to-b from-[#cfe3ee] to-[#e9f2f6] p-4 shadow-[inset_0_6px_18px_rgba(10,20,51,0.25)]">
+            <div className="grid min-h-[200px] grid-cols-3 content-start gap-x-4 gap-y-5 sm:grid-cols-4">
+              <AnimatePresence mode="popLayout">
+                {lines.map((o, i) => {
+                  const n = qty[o.key];
+                  return (
+                    <motion.div
+                      animate={{ y: 0, opacity: 1, rotate: ((i * 37) % 9) - 4 }}
+                      className="relative aspect-square"
+                      exit={{ y: -30, opacity: 0, scale: 0.6 }}
+                      initial={{ y: -60, opacity: 0, rotate: 0 }}
+                      key={o.key}
+                      layout
+                      transition={{ type: "spring", damping: 16, stiffness: 260 }}
+                    >
+                      {/* One card fanned out behind for each extra copy (max two shown). */}
+                      {Array.from({ length: Math.min(n - 1, 2) }, (_, k) => (
+                        <motion.span
+                          animate={{ rotate: (k + 1) * 6, x: (k + 1) * 5, y: -(k + 1) * 3, opacity: 1 }}
+                          className="absolute inset-0 rounded-xl border-2 border-white bg-[#dfe9ee] shadow-md"
+                          initial={{ rotate: 0, x: 0, y: 0, opacity: 0 }}
+                          key={k}
+                          style={{ zIndex: -1 - k }}
+                        />
                       ))}
-                    </AnimatePresence>
-                    {slice.length === 0 && (
-                      <p className="col-span-4 grid h-[180px] place-items-center text-center text-abyss/45 text-sm">
-                        Empty cooler. Add something on the left.
-                      </p>
-                    )}
-                  </div>
-                  {/* Fill meter */}
-                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-abyss/10">
-                    <motion.div animate={{ width: `${(slice.length / PER_COOLER) * 100}%` }} className="h-full bg-lime" />
-                  </div>
-                </motion.div>
-              );
-            })}
+                      <div className="relative size-full overflow-hidden rounded-xl border-2 border-white shadow-md">
+                        <Image alt={o.name} className="object-cover" fill sizes="110px" src={o.image} />
+                      </div>
+                      {n > 1 && (
+                        <motion.span
+                          animate={{ scale: 1 }}
+                          className="absolute -top-2 -right-2 grid min-w-7 place-items-center rounded-full bg-lime px-1.5 py-0.5 font-display text-abyss text-sm shadow-md"
+                          initial={{ scale: 0.4 }}
+                          key={n}
+                          transition={{ type: "spring", damping: 12, stiffness: 400 }}
+                        >
+                          ×{n}
+                        </motion.span>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+              {lines.length === 0 && (
+                <p className="col-span-full grid h-[180px] place-items-center text-center text-abyss/45 text-sm">
+                  Empty cooler. Add something on the left.
+                </p>
+              )}
+            </div>
+            {/* Fill meter for the current cooler */}
+            <div className="mt-4 flex items-center gap-3">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-abyss/10">
+                <motion.div animate={{ width: `${(fill / PER_COOLER) * 100}%` }} className="h-full bg-lime" />
+              </div>
+              {coolers > 1 && (
+                <span className="rounded-full bg-abyss px-2.5 py-1 font-semibold text-[11px] text-lime uppercase tracking-wider">
+                  {coolers} coolers
+                </span>
+              )}
+            </div>
           </div>
 
           {lines.length > 0 && (
